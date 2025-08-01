@@ -3,6 +3,7 @@ from ultralytics import YOLO
 import os
 from pathlib import Path
 import argparse
+import yaml
 
 
 class YOLOTrainer:
@@ -93,8 +94,11 @@ def main():
     MODEL_SIZE = args.model_size
     EPOCHS = args.epochs
     BATCH_SIZE = args.batch_size
-    IMAGE_SIZE = DATASET_YAML.get('imgsz', 640)  # Default to 640 if not specified
-    
+    # read the image size from the dataset YAML
+    with open(DATASET_YAML, 'r') as f:
+        data = yaml.safe_load(f)
+        IMAGE_SIZE = data.get('imgsz', 640)  # Default to 640 if not found
+        
     # Check if dataset exists
     if not os.path.exists(DATASET_YAML):
         print(f"Error: Dataset YAML not found at {DATASET_YAML}")
