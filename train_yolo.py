@@ -33,14 +33,7 @@ class YOLOTrainer:
             imgsz: Input image size
             batch_size: Batch size for training
             workers: Number of data loader workers
-        """
-        # Adjust batch size based on GPU memory
-        if self.device == 'cuda':
-            gpu_memory = torch.cuda.get_device_properties(0).total_memory / 1024**3
-            if gpu_memory < 8:  # Less than 8GB
-                batch_size = min(batch_size, 8)
-                print(f"Adjusted batch size to {batch_size} due to GPU memory constraints")
-        
+        """        
         # Training configuration
         train_config = {
             'data': self.dataset_yaml,
@@ -98,7 +91,7 @@ def main():
     with open(DATASET_YAML, 'r') as f:
         data = yaml.safe_load(f)
         IMAGE_SIZE = data.get('imgsz', 640)  # Default to 640 if not found
-        
+
     # Check if dataset exists
     if not os.path.exists(DATASET_YAML):
         print(f"Error: Dataset YAML not found at {DATASET_YAML}")
