@@ -56,15 +56,3 @@ Please include all of the following in this GitHub repository:
      - Keep this section high-level and concise — we will review your code directly for details.
 
 ---
-
-### **What We're Looking For**
-
-- A reasonable proof-of-concept level model. Does not need to be state-of-the-art, but needs to convince us your solution is viable to invest more time in.
-- A **reproducible** solution, from environment setup to running training and validation.
-- Clear and modular code structure.
-- Concise and sufficient comments to help others quickly understand your implementation.
-
----
-
-### **What We’re *****Not***** Looking For**
-- Submissions that rely heavily on GPU acceleration or brute-force training to achieve high performance. We prioritize sound model design, clarity of implementation, and reproducibility over raw score or scale of compute used.
