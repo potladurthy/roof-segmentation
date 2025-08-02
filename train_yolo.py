@@ -7,15 +7,16 @@ import yaml
 
 
 class YOLOTrainer:
-    def __init__(self, dataset_yaml, model_size='n'):
+    def __init__(self, dataset_yaml, output_dir, model_size='n'):
         """
         Initialize YOLO trainer
-        
         Args:
             dataset_yaml: Path to dataset YAML configuration
+            output_dir: Directory to save training outputs
             model_size: YOLO model size ('n', 's', 'm', 'l', 'x')
         """
         self.dataset_yaml = dataset_yaml
+        self.output_dir = output_dir
         self.model_size = model_size
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         print(f"Using device: {self.device}")
@@ -57,6 +58,13 @@ class YOLOTrainer:
         }
         
         print("Starting YOLO segmentation training...")
+        if self.output_dir:
+            # Create output directory if it doesn't exist
+            os.makedirs(self.output_dir, exist_ok=True)
+            train_config['project'] = self.output_dir
+            train_config['name'] = 'yolo_training'  # Custom experiment name
+            print(f"Training results will be saved to: {self.output_dir}/yolo_training")
+
         print(f"Configuration: {train_config}")
         
         # Start training
@@ -82,11 +90,15 @@ def main():
     parser.add_argument("--model_size", type=str, default='n', choices=['n', 's', 'm', 'l', 'x'], help="YOLO model size")
     parser.add_argument("--epochs", type=int, default=100, help="Number of training epochs")
     parser.add_argument("--batch_size", type=int, default=16, help="Batch size")
+    parser.add_argument("--output_dir", type=str, default="/outputs/yolo_training", help="Directory to save training outputs")
+
     args = parser.parse_args()
     DATASET_YAML = args.dataset_yaml
     MODEL_SIZE = args.model_size
     EPOCHS = args.epochs
     BATCH_SIZE = args.batch_size
+    OUTPUT_DIR = args.output_dir
+
     # read the image size from the dataset YAML
     with open(DATASET_YAML, 'r') as f:
         data = yaml.safe_load(f)
@@ -99,8 +111,8 @@ def main():
         return
     
     # Initialize trainer
-    trainer = YOLOTrainer(DATASET_YAML, MODEL_SIZE)
-    
+    trainer = YOLOTrainer(DATASET_YAML, OUTPUT_DIR, MODEL_SIZE)
+
     # Train model
     results = trainer.train(
         epochs=EPOCHS,
